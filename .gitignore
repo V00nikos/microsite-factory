@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+sites/
+node_modules/
+.DS_Store
+frontend/dist/
+frontend/.wrangler/
+convex/_generated/

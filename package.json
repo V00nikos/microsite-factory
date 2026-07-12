@@ -1,0 +1,19 @@
+{
+  "name": "microsite-factory",
+  "version": "1.0.0",
+  "description": "Hermes-agent-powered system: paste a B2B account list, get one research-grade personalized microsite per account, with a QA gate on every pipeline stage and an eval trace behind every decision.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "convex": "^1.42.1"
+  }
+}
