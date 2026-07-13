@@ -1,0 +1,51 @@
+{
+  "company": "Linear",
+  "domain": "linear.app",
+  "contact_title": "CTO",
+  "vertical": "devtools",
+  "reader_lens": "technical",
+  "findings": [
+    {
+      "claim": "Linear raised a $82M Series C funding round in June 2025, led by Accel, bringing their total funding to $134M across 4 rounds.",
+      "source_url": "https://getlatka.com/companies/linear.app",
+      "recency": "2025-06",
+      "signal_type": "funding",
+      "hook_strength": 5
+    },
+    {
+      "claim": "Linear's Series C round on June 10, 2025 raised $82M and increased their valuation to $1.3B.",
+      "source_url": "https://www.zoominfo.com/c/linear/469932035",
+      "recency": "2025-06",
+      "signal_type": "funding",
+      "hook_strength": 4
+    },
+    {
+      "claim": "Linear is hiring a Senior / Staff Product Engineer, AI, as of January 2026.",
+      "source_url": "https://www.zoominfo.com/c/linear/469932035",
+      "recency": "2026-01",
+      "signal_type": "hiring",
+      "hook_strength": 4
+    },
+    {
+      "claim": "Linear is hiring a Senior / Staff Fullstack Engineer as of January 2026.",
+      "source_url": "https://linear.app/careers/cd5ae036-0223-427a-b038-ba16ef9dcb32",
+      "recency": "2026-01",
+      "signal_type": "hiring",
+      "hook_strength": 4
+    },
+    {
+      "claim": "Linear is hiring a Senior / Staff Product Engineer as of January 2026.",
+      "source_url": "https://linear.app/careers/069c4628-88d7-4e4d-b393-c996fc7f3076",
+      "recency": "2026-01",
+      "signal_type": "hiring",
+      "hook_strength": 4
+    }
+  ],
+  "brand_hints": {
+    "hue_hex": "#5E6AD2",
+    "register": "technical/terminal",
+    "their_phrase": "purpose-built for product development"
+  },
+  "likely_objection": "Post-Series-C Linear is scaling engineering fast and will assume another vendor tool adds process overhead their lean team culture explicitly avoids.",
+  "confidence": 0.85
+}

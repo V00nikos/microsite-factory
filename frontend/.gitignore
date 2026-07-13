@@ -1,0 +1,17 @@
+node_modules
+dist
+.wrangler
+.vite
+
+# secrets / local env — never commit
+.env
+.env.local
+.env.*.local
+.dev.vars
+.dev.vars.*
+!.env.example
+!.dev.vars.example
+
+# os / editor
+.DS_Store
+*.log

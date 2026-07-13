@@ -1,0 +1,35 @@
+# Railway service config for the Hermes harness (Task 3.5).
+# Deploy from the Hermes source dir (~/.hermes/hermes-agent) so Railway builds
+# the OFFICIAL Dockerfile — we never fork Hermes core source. See README.md.
+#
+#   railway up --config /path/to/this/railway.toml
+#
+# One Railway service == one Hermes profile. This config runs the factory-worker
+# gateway (the executor). Duplicate the service for factory-manager if you split
+# orchestration onto its own container.
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"          # the Hermes repo's own Dockerfile
+
+[deploy]
+# s6-overlay /init is the image ENTRYPOINT; CMD selects the gateway.
+startCommand = "gateway run"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+numReplicas = 1
+
+# Persistent volume — Hermes state lives here (profiles, skills, memory, creds,
+# traces, the seeded microsite-factory repo). Mount point MUST be /opt/data
+# (the image sets HERMES_HOME=/opt/data and HOME=/opt/data).
+[[deploy.volumes]]
+mountPath = "/opt/data"
+name = "hermes-data"
+
+# Env vars are set in the Railway dashboard / CLI, NEVER baked into the image:
+#   HERMES_UID=10000  HERMES_GID=10000
+#   ANTHROPIC_API_KEY (or rely on seeded auth.json)  OPENAI_API_KEY
+#   LINKUP_API_KEY  CLOUDFLARE_API_TOKEN  CLOUDFLARE_ACCOUNT_ID
+#   CONVEX_SITE_URL  FACTORY_KEY  WEBHOOK_HMAC_SECRET
+# The seed step (seed-volume.sh) also lays ~/.hermes/.env onto the volume, but
+# Railway-level env vars win and keep secrets out of the image layers.

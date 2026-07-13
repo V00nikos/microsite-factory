@@ -1,0 +1,15 @@
+{
+  "comment": "Optional type-check config for Cloudflare Pages Functions (not part of the Vite build). Run: npm run typecheck:functions",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["@cloudflare/workers-types"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true
+  },
+  "include": ["api"]
+}

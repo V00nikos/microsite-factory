@@ -1,0 +1,25 @@
+# ---------------------------------------------------------------------------
+# Cloudflare Pages FUNCTIONS environment (SERVER-SIDE ONLY).
+#
+# Copy to `.dev.vars` for local `wrangler pages dev`. In production set these in
+# the Cloudflare Pages project (Settings -> Environment variables), NOT in the
+# client build. These values are NEVER exposed to the browser.
+#
+# HARD RULE: the HMAC secret must NEVER be given a VITE_ prefix and must never
+# appear in client code — anything VITE_* is inlined into the public bundle.
+# ---------------------------------------------------------------------------
+
+# HMAC key shared with Hermes. The Function signs the raw request body with this
+# (HMAC-SHA256, hex) and sends it as: x-hermes-signature: sha256=<hexdigest>
+WEBHOOK_HMAC_SECRET="replace-with-a-long-random-secret-shared-with-hermes"
+
+# Base URL of the Hermes webhook receiver. Routes are appended by name:
+#   ${HERMES_WEBHOOK_BASE}/run-factory
+#   ${HERMES_WEBHOOK_BASE}/regenerate
+#   ${HERMES_WEBHOOK_BASE}/update-positioning
+HERMES_WEBHOOK_BASE="https://your-hermes-tunnel.example.dev/webhooks"
+
+# Optional: override individual webhook URLs (take precedence over the base).
+# HERMES_RUN_FACTORY_URL="https://.../run-factory"
+# HERMES_REGENERATE_URL="https://.../regenerate"
+# HERMES_UPDATE_POSITIONING_URL="https://.../update-positioning"

@@ -1,0 +1,455 @@
+/* ------------------------------------------------------------------ */
+/*  ActivityPanel — right-rail live activity console for the fleet.     */
+/*  Log (what's done, from recentTraces) + Queue (what's pending,        */
+/*  derived from the fleet board). Mission-control telemetry aesthetic.  */
+/* ------------------------------------------------------------------ */
+
+.panel {
+  position: sticky;
+  top: calc(60px + var(--sp-4));
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+/* ---------- panel header ---------- */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-3);
+  flex-wrap: wrap;
+}
+.head h2 {
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+.headMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.lastEvent {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: var(--fg-faint);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.headLive {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.headLive i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--shipped);
+  animation: pulse 2s var(--ease) infinite;
+}
+.headLive.stale i {
+  background: var(--fg-ghost);
+  animation: none;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* ---------- section shell ---------- */
+.section {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--ink-800), var(--ink-850));
+  box-shadow: var(--shadow-panel);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding: 11px 13px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.sectionHead h3 {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.sectionSub {
+  font-size: 11px;
+  color: var(--fg-faint);
+  margin-left: auto;
+}
+
+/* ---------- log feed ---------- */
+.feed {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 42vh;
+  overflow-y: auto;
+}
+.logRow {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  gap: 9px;
+  align-items: start;
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.logRow:last-child {
+  border-bottom: 0;
+}
+/* in-flight rows pin to the top and read as "happening now" */
+.activeRow {
+  background: var(--active-bg);
+  box-shadow: inset 2px 0 0 var(--amber);
+}
+.logDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex: none;
+}
+.logDot.pass {
+  background: var(--shipped);
+  box-shadow: 0 0 8px -1px var(--shipped);
+}
+.logDot.block {
+  background: var(--blocked);
+  box-shadow: 0 0 8px -1px var(--blocked);
+}
+.logDot.live {
+  background: var(--amber);
+  box-shadow: 0 0 9px -1px var(--amber);
+  animation: pulse 1.6s var(--ease) infinite;
+}
+.logMain {
+  min-width: 0;
+}
+.logTop {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.logAcct {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.logCompany {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.logStage {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 1px 5px;
+  flex: none;
+}
+.liveTag {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid color-mix(in oklab, var(--accent) 34%, transparent);
+  background: var(--accent-wash);
+  border-radius: var(--r-sm);
+  padding: 1px 5px;
+  flex: none;
+}
+.retry {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--violet);
+  border: 1px solid color-mix(in oklab, var(--violet) 32%, transparent);
+  border-radius: var(--r-sm);
+  padding: 1px 5px;
+  flex: none;
+}
+.logVerdict {
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.pass {
+  color: var(--shipped);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.block {
+  color: var(--critical);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.check {
+  color: var(--fg-dim);
+  font-weight: 400;
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.verb {
+  color: var(--amber-bright);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.shipLink {
+  color: var(--shipped);
+  font-weight: 400;
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.blockReason {
+  color: var(--critical);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.logTime {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-faint);
+  white-space: nowrap;
+  text-align: right;
+  padding-top: 1px;
+  font-variant-numeric: tabular-nums;
+}
+/* the ticking elapsed timer on a live row */
+.timer {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--amber-bright);
+  white-space: nowrap;
+  text-align: right;
+  padding-top: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- queue ---------- */
+.chips {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding: 11px 13px 4px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: var(--ink-780);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.chip b {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.chip i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.chip.running {
+  border-color: color-mix(in oklab, var(--accent) 30%, transparent);
+  color: var(--accent);
+}
+.chip.running i {
+  background: var(--accent);
+}
+.chip.waiting {
+  color: var(--queued);
+}
+.chip.waiting i {
+  background: var(--queued);
+}
+.chip.attention {
+  border-color: color-mix(in oklab, var(--critical) 34%, transparent);
+  color: var(--critical);
+}
+.chip.attention i {
+  background: var(--blocked);
+}
+
+.queueScroll {
+  max-height: 34vh;
+  overflow-y: auto;
+  padding: 6px 0 4px;
+}
+.group {
+  padding: 0;
+}
+.groupLabel {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  padding: 8px 13px 4px;
+}
+.qItem {
+  display: grid;
+  grid-template-columns: 3px 1fr auto;
+  gap: 9px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 8px 13px;
+  border: 0;
+  border-top: 1px solid var(--line-soft);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  transition: background var(--dur) var(--ease);
+}
+.qItem:hover {
+  background: var(--ink-780);
+}
+.qBar {
+  width: 3px;
+  align-self: stretch;
+  border-radius: 3px;
+  min-height: 22px;
+}
+.qBar.running {
+  background: var(--amber);
+}
+.qBar.waiting {
+  background: var(--queued);
+}
+.qBar.attention {
+  background: var(--blocked);
+}
+.qBody {
+  min-width: 0;
+}
+.qCompany {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qSub {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-faint);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qSub.reason {
+  color: var(--critical);
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.4;
+}
+.qStage {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber-bright);
+  flex: none;
+}
+
+/* ---------- empty ---------- */
+.empty {
+  padding: 22px 16px;
+  text-align: center;
+  color: var(--fg-faint);
+  font-size: 12.5px;
+}
+.emptyMono {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--fg-faint);
+}
+
+/* ---------- stacked (mobile / narrow) ---------- */
+@media (max-width: 1100px) {
+  .panel {
+    position: static;
+    top: auto;
+  }
+  .feed {
+    max-height: 320px;
+  }
+  .queueScroll {
+    max-height: none;
+  }
+}

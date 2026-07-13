@@ -1,0 +1,32 @@
+{
+  "name": "microsite-factory-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Microsite Factory operator console — Vite + React SPA. Reads fleet state from Convex live queries; sends commands to Hermes via HMAC-signing Cloudflare Pages Functions.",
+  "scripts": {
+    "dev": "vite",
+    "dev:pages": "wrangler pages dev --proxy 5173 -- vite",
+    "build": "tsc --noEmit && vite build",
+    "start": "npx -y serve -s dist -l ${PORT:-3000}",
+    "typecheck": "tsc --noEmit",
+    "typecheck:functions": "tsc --noEmit -p functions/tsconfig.json",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "^5.2.8",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "convex": "^1.42.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260712.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4"
+  }
+}

@@ -1,0 +1,190 @@
+/* ------------------------------------------------------------------ */
+/*  Microsite Factory — design tokens                                  */
+/*  Aesthetic: mission-control dataviz console. Dataviz-validated blue  */
+/*  accent, fixed semantic status (green / amber / red), light + dark   */
+/*  theming with an explicit toggle that wins in both directions.       */
+/*                                                                      */
+/*  Two layers:                                                         */
+/*    1. Semantic tokens (the reference palette) — redefined per theme. */
+/*    2. Legacy aliases — the old --fg / --ink-800 / --amber names map  */
+/*       onto the semantic tokens via var(), so they resolve to the     */
+/*       active theme's value automatically (late-bound at use site).   */
+/* ------------------------------------------------------------------ */
+
+/* ===================== 1. SEMANTIC TOKENS (LIGHT) ===================== */
+:root {
+  --page:        #f4f4f1;
+  --surface:     #fcfcfb;
+  --surface-2:   #ffffff;
+  --ink:         #0b0b0b;
+  --ink-2:       #52514e;
+  --muted:       #898781;
+  --grid:        #e1e0d9;
+  --axis:        #c3c2b7;
+  --border:      rgba(11, 11, 11, 0.10);
+  --border-2:    rgba(11, 11, 11, 0.06);
+
+  --accent:      #2a78d6;
+  --accent-soft: rgba(42, 120, 214, 0.12);
+  --track:       #e7e6e1;
+
+  --good:        #0ca30c;
+  --warning:     #d98b00;
+  --serious:     #cf6a3f;
+  --critical:    #d03b3b;
+  --good-wash:   rgba(12, 163, 12, 0.10);
+  --accent-wash: rgba(42, 120, 214, 0.10);
+  --crit-wash:   rgba(208, 59, 59, 0.10);
+
+  /* engagement funnel ordinal (blue, light -> dark) */
+  --fun-1: #86b6ef;
+  --fun-2: #3987e5;
+  --fun-3: #1c5cab;
+
+  --violet: #6b57e0;
+
+  --shadow:     0 1px 2px rgba(11, 11, 11, 0.05), 0 8px 24px rgba(11, 11, 11, 0.04);
+  --shadow-pop: 0 12px 40px -8px rgba(11, 11, 11, 0.18), 0 2px 6px rgba(11, 11, 11, 0.06);
+
+  color-scheme: light;
+}
+
+/* ===================== SEMANTIC TOKENS (DARK, via OS) ===================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page:        #0c0c0b;
+    --surface:     #1a1a19;
+    --surface-2:   #201f1e;
+    --ink:         #ffffff;
+    --ink-2:       #c3c2b7;
+    --muted:       #8f8d87;
+    --grid:        #2c2c2a;
+    --axis:        #383835;
+    --border:      rgba(255, 255, 255, 0.10);
+    --border-2:    rgba(255, 255, 255, 0.055);
+
+    --accent:      #3987e5;
+    --accent-soft: rgba(57, 135, 229, 0.18);
+    --track:       #2a2a28;
+
+    --good:        #0ca30c;
+    --warning:     #fab219;
+    --serious:     #ec835a;
+    --critical:    #e0504f;
+    --good-wash:   rgba(12, 163, 12, 0.16);
+    --accent-wash: rgba(57, 135, 229, 0.15);
+    --crit-wash:   rgba(224, 80, 79, 0.15);
+
+    --fun-1: #5598e7;
+    --fun-2: #3987e5;
+    --fun-3: #184f95;
+
+    --violet: #9d8cf0;
+
+    --shadow:     0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.35);
+    --shadow-pop: 0 24px 60px -18px rgba(0, 0, 0, 0.7), 0 2px 8px rgba(0, 0, 0, 0.4);
+
+    color-scheme: dark;
+  }
+}
+
+/* ===================== EXPLICIT TOGGLE (wins both ways) ===================== */
+:root[data-theme="light"] {
+  --page: #f4f4f1; --surface: #fcfcfb; --surface-2: #ffffff; --ink: #0b0b0b; --ink-2: #52514e;
+  --muted: #898781; --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,0.10); --border-2: rgba(11,11,11,0.06);
+  --accent: #2a78d6; --accent-soft: rgba(42,120,214,0.12); --track: #e7e6e1;
+  --good: #0ca30c; --warning: #d98b00; --serious: #cf6a3f; --critical: #d03b3b;
+  --good-wash: rgba(12,163,12,0.10); --accent-wash: rgba(42,120,214,0.10); --crit-wash: rgba(208,59,59,0.10);
+  --fun-1: #86b6ef; --fun-2: #3987e5; --fun-3: #1c5cab;
+  --violet: #6b57e0;
+  --shadow: 0 1px 2px rgba(11,11,11,0.05), 0 8px 24px rgba(11,11,11,0.04);
+  --shadow-pop: 0 12px 40px -8px rgba(11,11,11,0.18), 0 2px 6px rgba(11,11,11,0.06);
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --page: #0c0c0b; --surface: #1a1a19; --surface-2: #201f1e; --ink: #ffffff; --ink-2: #c3c2b7;
+  --muted: #8f8d87; --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10); --border-2: rgba(255,255,255,0.055);
+  --accent: #3987e5; --accent-soft: rgba(57,135,229,0.18); --track: #2a2a28;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #e0504f;
+  --good-wash: rgba(12,163,12,0.16); --accent-wash: rgba(57,135,229,0.15); --crit-wash: rgba(224,80,79,0.15);
+  --fun-1: #5598e7; --fun-2: #3987e5; --fun-3: #184f95;
+  --violet: #9d8cf0;
+  --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 30px rgba(0,0,0,0.35);
+  --shadow-pop: 0 24px 60px -18px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.4);
+  color-scheme: dark;
+}
+
+/* ===================== SHARED (theme-independent) ===================== */
+:root {
+  /* typography — self-hosted via @fontsource (no CDN). Grotesque sans for
+     headings, monospace for data / tabular figures. */
+  --font-sans: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* radii */
+  --r-sm: 5px;
+  --r-md: 8px;
+  --r-lg: 13px;
+  --r-pill: 999px;
+
+  /* spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 22px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+
+  /* motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur: 180ms;
+}
+
+/* ===================== 2. LEGACY ALIASES ===================== */
+/* Old token names kept alive so screens authored against them reskin for
+   free and become theme-aware. var() is resolved at the use site, so these
+   pick up whichever theme is active on :root. */
+:root {
+  /* foreground */
+  --fg:        var(--ink);
+  --fg-dim:    var(--ink-2);
+  --fg-faint:  var(--muted);
+  --fg-ghost:  color-mix(in oklab, var(--muted) 60%, transparent);
+
+  /* layered surfaces -> flat semantic surfaces */
+  --ink-900: var(--page);
+  --ink-850: var(--surface);
+  --ink-800: var(--surface);
+  --ink-780: var(--surface-2);
+  --ink-750: var(--surface-2);
+  --ink-700: var(--track);
+
+  /* hairlines */
+  --line:        var(--border);
+  --line-soft:   var(--border-2);
+  --line-bright: var(--axis);
+
+  /* brand / active accent (was amber -> now the blue accent) */
+  --amber:        var(--accent);
+  --amber-bright: var(--accent);
+  --amber-dim:    color-mix(in oklab, var(--accent) 68%, #000);
+  --amber-glow:   var(--accent-soft);
+
+  /* semantic state */
+  --active:     var(--accent);
+  --active-bg:  var(--accent-wash);
+  --shipped:    var(--good);
+  --shipped-bg: var(--good-wash);
+  --blocked:    var(--critical);
+  --blocked-bg: var(--crit-wash);
+  --queued:     var(--muted);
+  --queued-bg:  color-mix(in oklab, var(--muted) 14%, transparent);
+
+  /* telemetry / links */
+  --cyan:     var(--accent);
+  --cyan-dim: color-mix(in oklab, var(--accent) 70%, var(--surface));
+
+  /* depth */
+  --shadow-panel: var(--shadow);
+}

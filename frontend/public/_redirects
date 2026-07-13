@@ -1,0 +1,5 @@
+# Cloudflare Pages SPA fallback.
+# Pages Functions (/api/*) are matched BEFORE this catch-all, so command routes
+# still hit their handlers; everything else serves the SPA shell for client-side
+# routing (deep links like /intake, /preview/:id, /brief).
+/*    /index.html    200

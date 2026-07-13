@@ -66,8 +66,13 @@ that the retry succeeds: "finding 4's source does not mention Kubernetes" beats
 
 ## Trace record — write on EVERY invocation
 
-Append one JSONL line to `~/.hermes/factory/traces/{date}.jsonl` (and mirror to
-the state store if configured):
+Write the trace with ONE terminal command (it appends the local JSONL to
+`~/.hermes/factory/traces/{date}.jsonl` AND mirrors to Convex, spooling locally
+when Convex is not configured — call it every time, pass or fail):
+`~/microsite-factory/scripts/factory-report.sh trace '<trace json>'`
+If it exits 1, note the mirror failure in your verdict output but do not change
+the verdict. Keep the JSON single-line; inside string values avoid literal
+shell characters (`&`, `|`, `;`, `<`, `>`, backticks, `$(`) — write "to" not "->".
 
 ```json
 {"trace_id": "uuid", "ts": "ISO8601", "account_id": "", "stage": "",

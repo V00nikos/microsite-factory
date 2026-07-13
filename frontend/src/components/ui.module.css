@@ -1,0 +1,230 @@
+/* ---------- StatusPill (reference dataviz pills) ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px 3px 8px;
+  border-radius: var(--r-pill);
+  font-size: 11.5px;
+  font-weight: 620;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+}
+.pill svg {
+  width: 11px;
+  height: 11px;
+  flex: none;
+}
+.idot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--accent);
+  animation: idot-pulse 1.8s ease-out infinite;
+}
+.queued {
+  color: var(--muted);
+  background: color-mix(in oklab, var(--muted) 14%, transparent);
+}
+.in_progress {
+  color: var(--accent);
+  background: var(--accent-wash);
+}
+.shipped {
+  color: var(--good);
+  background: var(--good-wash);
+}
+.blocked {
+  color: var(--critical);
+  background: var(--crit-wash);
+}
+@keyframes idot-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 45%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 0%, transparent);
+  }
+}
+
+/* ---------- StageTrack ---------- */
+.track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+}
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+}
+.nodeDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-bright);
+  background: var(--ink-850);
+  position: relative;
+  transition: all var(--dur) var(--ease);
+}
+.nodeLabel {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--fg-ghost);
+}
+.link {
+  height: 2px;
+  flex: 1;
+  min-width: 14px;
+  background: var(--line);
+  margin-bottom: 18px;
+  border-radius: 2px;
+  transition: background var(--dur) var(--ease);
+}
+.link.filled {
+  background: linear-gradient(90deg, var(--shipped), var(--shipped));
+  opacity: 0.55;
+}
+/* node states */
+.done .nodeDot {
+  background: var(--shipped);
+  border-color: var(--shipped);
+}
+.done .nodeLabel {
+  color: var(--shipped);
+}
+.active .nodeDot {
+  background: var(--amber);
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px var(--amber-glow);
+  animation: pulse-dot 1.6s var(--ease) infinite;
+}
+.active .nodeLabel {
+  color: var(--amber-bright);
+}
+.blockedNode .nodeDot {
+  background: var(--blocked);
+  border-color: var(--blocked);
+}
+.blockedNode .nodeDot::after {
+  content: "";
+  position: absolute;
+  inset: 2.5px;
+  background: var(--ink-900);
+  clip-path: polygon(0 45%, 45% 45%, 45% 0, 55% 0, 55% 45%, 100% 45%, 100% 55%, 55% 55%, 55% 100%, 45% 100%, 45% 55%, 0 55%);
+  transform: rotate(45deg);
+}
+.blockedNode .nodeLabel {
+  color: #ff8688;
+}
+
+/* ---------- Modal ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: color-mix(in oklab, var(--ink) 55%, transparent);
+  backdrop-filter: blur(3px);
+  display: grid;
+  place-items: center;
+  padding: var(--sp-4);
+  animation: fade-in 160ms var(--ease);
+}
+.modal {
+  width: min(520px, 100%);
+  padding: var(--sp-6);
+  animation: pop-in 200ms var(--ease);
+}
+.modalTitle {
+  font-size: 20px;
+  margin-bottom: var(--sp-2);
+}
+.modalActions {
+  display: flex;
+  gap: var(--sp-3);
+  justify-content: flex-end;
+  margin-top: var(--sp-6);
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+/* ---------- Toast ---------- */
+.toastWrap {
+  position: fixed;
+  bottom: var(--sp-5);
+  right: var(--sp-5);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-width: min(420px, calc(100vw - 32px));
+}
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-bright);
+  background: var(--ink-780);
+  box-shadow: var(--shadow-pop);
+  font-size: 13px;
+  animation: toast-in 220ms var(--ease);
+}
+.toast .bar {
+  width: 3px;
+  align-self: stretch;
+  border-radius: 3px;
+  flex: none;
+}
+.toast.ok .bar {
+  background: var(--shipped);
+}
+.toast.err .bar {
+  background: var(--blocked);
+}
+.toast.info .bar {
+  background: var(--amber);
+}
+.toastMsg {
+  color: var(--fg-dim);
+}
+.toastMsg strong {
+  color: var(--fg);
+  font-weight: 640;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}

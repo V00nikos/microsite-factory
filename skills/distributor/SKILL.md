@@ -57,17 +57,28 @@ research → QA(research) → build → QA(build) → deploy → QA(deploy)
   breadth (fewer queries), never reduce QA.
 - Max 5 accounts in flight at once. Prove one account end-to-end before fanning
   out the rest (first run of a session is always sequential).
-- Write fleet state after every stage transition to the state store (Convex or
-  the local JSONL fallback at `~/.hermes/factory/fleet.jsonl`):
+- Write fleet state after EVERY stage transition with ONE terminal command
+  (it appends the local log `~/.hermes/factory/fleet.jsonl` AND mirrors to
+  Convex, spooling locally when Convex is not configured — never skip it;
+  if it exits 1, surface the error in the fleet summary):
+  `~/microsite-factory/scripts/factory-report.sh fleet '<json>'`
+  Keep the JSON single-line; inside string values avoid literal shell
+  characters (`&`, `|`, `;`, `<`, `>`, backticks, `$(`) — write "to" not "->".
 
 ```json
-{"account": "acme.com#cto", "stage": "build", "status": "in_progress",
- "cost_usd": 0.84, "started_at": "...", "trace_ids": ["..."]}
+{"account_id": "acme-com-cto", "company": "Acme", "stage": "research|build|deploy",
+ "status": "queued|in_progress|blocked|shipped", "blocked_reason": "",
+ "cost_usd": 0.84, "url": "", "updated_at": "ISO8601"}
 ```
+
+  `account_id` is the slug used everywhere (sites/{account_id}/, Pages project,
+  beacon): lowercase `domain` + `-` + short slug of `contact_title`, dots and
+  non-alphanumerics → `-` (e.g. `acme.com` + `CTO` → `acme-com-cto`).
 
 ## Failure handling
 
-- Research confidence below 0.5 → do NOT build. Mark `needs_human`, log why.
+- Research confidence below 0.5 → do NOT build. Mark the account `blocked` with
+  `blocked_reason: "research confidence {x} < 0.5 — needs human review"`.
   A shallow site is worse than no site — it reads as spam and burns the operator.
 - Deploy failure → retry once, then block with the wrangler error verbatim.
 - Never fabricate a stage result to keep the pipeline moving.

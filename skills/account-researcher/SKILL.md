@@ -30,12 +30,15 @@ at this company:
 Log which reader lens you used — the QA reviewer checks the findings match it.
 
 ### 2. Content research (what is true about them right now)
-Run 3–6 targeted queries via `scripts/linkup-research.mjs` (the only research path in the
-pipeline — returns findings contract-shaped with source_urls). Invocations:
-- `node scripts/linkup-research.mjs --query "{company} engineering blog OR careers {current_year}"`
-- `node scripts/linkup-research.mjs --query "{company} funding OR raised OR series"`
-- `node scripts/linkup-research.mjs --query "{company} {vertical} news {current_year}"`
-- `node scripts/linkup-research.mjs --query "{company} product positioning" --include-domains {domain} --depth deep`
+Run 3–6 targeted queries via the terminal tool using `linkup-research.mjs` (the only
+research path in the pipeline — returns `{"findings":[...]}` already contract-shaped
+with source_urls; merge and filter results into your packet). Invocations:
+- `node ~/microsite-factory/scripts/linkup-research.mjs --query "{company} engineering blog OR careers {current_year}"`
+- `node ~/microsite-factory/scripts/linkup-research.mjs --query "{company} funding OR raised OR series"`
+- `node ~/microsite-factory/scripts/linkup-research.mjs --query "{company} {vertical} news {current_year}"`
+- `node ~/microsite-factory/scripts/linkup-research.mjs --query "{company} product positioning" --include-domains {domain} --depth deep`
+If the script exits nonzero, read the stderr message; do not fall back to other web
+tools inside the pipeline — report the failure in the packet instead.
 Use `--depth deep` at most twice per account (cost). Prefer primary sources (their site,
 their posts, filings) over aggregators. Recency matters: a 3-year-old news item is
 context, not a hook.

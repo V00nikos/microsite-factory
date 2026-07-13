@@ -1,9 +1,22 @@
+# --- secrets (never commit) ---
 .env
 .env.*
 !.env.example
+.dev.vars
+**/.dev.vars
+!**/.dev.vars.example
+convex/.env.local
+
+# --- generated / local state ---
 sites/
 node_modules/
-.DS_Store
+**/node_modules/
 frontend/dist/
 frontend/.wrangler/
+**/.wrangler/
 convex/_generated/
+.superpowers/
+.railway/
+
+# --- os ---
+.DS_Store
