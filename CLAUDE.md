@@ -15,7 +15,7 @@ microsite-factory/
 ├── docs/microsite-factory-prd.md
 ├── skills/                    ← distributor, account-researcher, microsite-builder, qa-reviewer
 ├── convex/                    ← schema.ts, mutations, queries, http.ts (HTTP actions)
-├── frontend/                  ← Next.js app (4 screens)
+├── frontend/                  ← Vite + React SPA (4 screens) + Pages Functions (HMAC signing)
 ├── sites/                     ← generated microsites, one folder per account_id (gitignored)
 └── scripts/install-skills.sh  ← installs skills into ~/.hermes/skills + runs hermes doctor
 ```

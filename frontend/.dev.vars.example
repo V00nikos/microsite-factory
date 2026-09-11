@@ -10,7 +10,7 @@
 # ---------------------------------------------------------------------------
 
 # HMAC key shared with Hermes. The Function signs the raw request body with this
-# (HMAC-SHA256, hex) and sends it as: x-hermes-signature: sha256=<hexdigest>
+# (HMAC-SHA256, hex) and sends it as: X-Webhook-Signature: <hexdigest>
 WEBHOOK_HMAC_SECRET="replace-with-a-long-random-secret-shared-with-hermes"
 
 # Base URL of the Hermes webhook receiver. Routes are appended by name:

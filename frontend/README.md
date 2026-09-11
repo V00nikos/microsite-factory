@@ -49,7 +49,7 @@ computes `HMAC-SHA256(rawBody, WEBHOOK_HMAC_SECRET)` via Web Crypto (`crypto.sub
 **Signature scheme (Hermes must match):**
 ```
 digest = HMAC-SHA256(rawRequestBody, WEBHOOK_HMAC_SECRET)   # hex, lowercase
-header:  x-hermes-signature: sha256=<hexdigest>
+header:  X-Webhook-Signature: <hexdigest>   # bare hex, no "sha256=" prefix
 ```
 Verify over the **raw** body **before** JSON parsing. The browser sends the
 payload *unsigned*; only the Function ever holds the secret.
