@@ -269,57 +269,7 @@ The fleet-board query joins each account with its event counts and computes firs
 
 <br>
 
-## Architecture
-
-```mermaid
-flowchart TB
-    subgraph Browser["Operator (browser)"]
-        UI["Console SPA<br/>Intake · Brief · Fleet board · Preview"]
-    end
-
-    subgraph CF["Cloudflare"]
-        Pages["Pages: SPA (static)"]
-        Fn["Pages Function<br/>HMAC-signs commands<br/>(holds WEBHOOK_HMAC_SECRET)"]
-        Sites["Per-account microsites<br/>acme-com-cto.pages.dev<br/>+ 3-event beacon"]
-    end
-
-    subgraph Hermes["Hermes backend (Mac today, EC2/Railway next)"]
-        GW["Gateway + kanban distributor"]
-        subgraph Skills["skills (source of truth)"]
-            R["account-researcher"]
-            B["microsite-builder"]
-            Q["qa-reviewer<br/>(gates every stage)"]
-        end
-        GW --> R --> Q
-        Q --> B --> Q
-    end
-
-    subgraph Data["Convex (state + evals)"]
-        Fleet["fleet · traces · events · activity"]
-    end
-
-    Linkup["Linkup<br/>sourced, structured research"]
-
-    UI -- "commands (POST)" --> Fn
-    Fn -- "HMAC-verified webhooks<br/>run-factory · regenerate · update-positioning" --> GW
-    UI -- "reads: live queries" --> Fleet
-
-    R -- "structured, cited" --> Linkup
-    Q -- "state + trace (HTTP actions, x-factory-key)" --> Fleet
-    B -- "wrangler deploy" --> Sites
-    Sites -- "view / scroll50 / cta" --> Fleet
-
-    classDef cf fill:#f6821f22,stroke:#f6821f;
-    classDef hermes fill:#3987e522,stroke:#3987e5;
-    classDef data fill:#1baf7a22,stroke:#1baf7a;
-    class Pages,Fn,Sites cf;
-    class GW,R,B,Q hermes;
-    class Fleet data;
-```
-
-**The read/write split is non-negotiable.** Commands flow *to* Hermes only through HMAC-signed webhooks. The console reads *all* state directly from Convex live queries. Dashboard reads never touch the agent, so the board stays live even if the backend is unreachable.
-
-### Security model
+## Security model
 
 - **Webhooks.** The browser sends unsigned JSON to a same-origin Pages Function. The Function holds the secret, signs the raw body with HMAC-SHA256, and forwards it. Hermes verifies the signature before parsing anything. An unsigned or mis-signed request gets a 401 before the prompt ever runs.
 - **Convex writes.** Only `/fleet`, `/trace`, and `/pipelog`, each requiring an `x-factory-key` header. Every mutation is internal. The console has no write path at all.
